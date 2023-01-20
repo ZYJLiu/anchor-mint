@@ -1,7 +1,7 @@
 import * as anchor from "@project-serum/anchor"
 import { Program } from "@project-serum/anchor"
 import { findProgramAddressSync } from "@project-serum/anchor/dist/cjs/utils/pubkey"
-import { PublicKey } from "@solana/web3.js"
+import { Keypair, PublicKey } from "@solana/web3.js"
 import { AnchorMisc } from "../target/types/anchor_misc"
 import * as spl from "@solana/spl-token"
 import { expect } from "chai"
@@ -87,5 +87,55 @@ describe("anchor-misc", () => {
 
     const tokenAccount = await spl.getAccount(connection, tokenAddress)
     expect(Number(tokenAccount.amount)).to.equal(1)
+  })
+
+  it("Is initialized!", async () => {
+    const mint = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr")
+
+    const [auth] = findProgramAddressSync(
+      [Buffer.from("auth")],
+      program.programId
+    )
+
+    console.log(auth)
+
+    const tx = await program.methods
+      .init()
+      .accounts({
+        mint: mint,
+        tokenAccount: auth,
+        auth: auth,
+      })
+      .rpc()
+
+    const tokenAccount = await spl.getAccount(connection, auth)
+    expect(Number(tokenAccount.amount)).to.equal(0)
+  })
+
+  it("Is initialized!", async () => {
+    const mint = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr")
+
+    const tokenAddress = await spl.getAssociatedTokenAddress(
+      mint,
+      wallet.publicKey
+    )
+
+    const [auth] = findProgramAddressSync(
+      [Buffer.from("auth")],
+      program.programId
+    )
+
+    const tx = await program.methods
+      .usdcDevTransfer()
+      .accounts({
+        auth: auth,
+        fromTokenAccount: auth,
+        toTokenAccount: tokenAddress,
+        mint: mint,
+      })
+      .rpc()
+
+    const tokenAccount = await spl.getAccount(connection, auth)
+    console.log(tokenAccount.amount)
   })
 })
