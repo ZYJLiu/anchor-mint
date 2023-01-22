@@ -1,3 +1,4 @@
+// create new nft in collection
 use anchor_lang::{prelude::*, solana_program::program::invoke_signed};
 use anchor_spl::{
     associated_token::AssociatedToken,
@@ -82,7 +83,6 @@ impl anchor_lang::Id for TokenMetaData {
     }
 }
 
-// create new nft in collection
 pub fn create_nft_in_collection_handler(
     ctx: Context<CreateNftInCollection>,
     uri: String,

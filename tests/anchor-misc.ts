@@ -47,36 +47,36 @@ describe("anchor-misc", () => {
   let receiverTokenAccount: anchor.web3.PublicKey
   let mint: anchor.web3.PublicKey
 
-  // before(async () => {
-  //   mint = await spl.createMint(
-  //     connection,
-  //     wallet.payer,
-  //     wallet.publicKey,
-  //     null,
-  //     3
-  //   )
+  before(async () => {
+    mint = await spl.createMint(
+      connection,
+      wallet.payer,
+      wallet.publicKey,
+      null,
+      3
+    )
 
-  //   senderTokenAccount = await spl.createAccount(
-  //     connection,
-  //     wallet.payer,
-  //     mint,
-  //     wallet.publicKey
-  //   )
+    senderTokenAccount = await spl.createAccount(
+      connection,
+      wallet.payer,
+      mint,
+      wallet.publicKey
+    )
 
-  //   receiverTokenAccount = await spl.getAssociatedTokenAddress(
-  //     mint,
-  //     receiver.publicKey
-  //   )
+    receiverTokenAccount = await spl.getAssociatedTokenAddress(
+      mint,
+      receiver.publicKey
+    )
 
-  //   await spl.mintTo(
-  //     connection,
-  //     wallet.payer,
-  //     mint,
-  //     senderTokenAccount,
-  //     wallet.payer,
-  //     100_000
-  //   )
-  // })
+    await spl.mintTo(
+      connection,
+      wallet.payer,
+      mint,
+      senderTokenAccount,
+      wallet.payer,
+      100_000
+    )
+  })
 
   it("Create Collection NFT", async () => {
     const metadataPDA = await metaplex
@@ -176,21 +176,21 @@ describe("anchor-misc", () => {
     expect(Number(account.amount)).to.equal(1)
   })
 
-  // it("SPL token transfer", async () => {
-  //   // Add your test here.
-  //   const tx = await program.methods
-  //     .tokenTransfer(new anchor.BN(10))
-  //     .accounts({
-  //       receiver: receiver.publicKey,
-  //       fromTokenAccount: senderTokenAccount,
-  //       toTokenAccount: receiverTokenAccount,
-  //       mint: mint,
-  //     })
-  //     .rpc()
+  it("SPL token transfer", async () => {
+    // Add your test here.
+    const tx = await program.methods
+      .tokenTransfer(new anchor.BN(10))
+      .accounts({
+        receiver: receiver.publicKey,
+        fromTokenAccount: senderTokenAccount,
+        toTokenAccount: receiverTokenAccount,
+        mint: mint,
+      })
+      .rpc()
 
-  //   const tokenAccount = await spl.getAccount(connection, receiverTokenAccount)
-  //   expect(Number(tokenAccount.amount)).to.equal(10)
-  // })
+    const tokenAccount = await spl.getAccount(connection, receiverTokenAccount)
+    expect(Number(tokenAccount.amount)).to.equal(10)
+  })
 
   // // Only run once to create PDA token account
   // it("Create PDA USDC-dev token account", async () => {
@@ -216,31 +216,31 @@ describe("anchor-misc", () => {
   //   expect(Number(tokenAccount.amount)).to.equal(0)
   // })
 
-  // it("Transfer USDC-dev from PDA token account", async () => {
-  //   const mint = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr")
+  it("Transfer USDC-dev from PDA token account", async () => {
+    const mint = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr")
 
-  //   const tokenAddress = await spl.getAssociatedTokenAddress(
-  //     mint,
-  //     wallet.publicKey
-  //   )
+    const tokenAddress = await spl.getAssociatedTokenAddress(
+      mint,
+      wallet.publicKey
+    )
 
-  //   const [auth] = findProgramAddressSync(
-  //     [Buffer.from("auth")],
-  //     program.programId
-  //   )
+    const [auth] = findProgramAddressSync(
+      [Buffer.from("auth")],
+      program.programId
+    )
 
-  //   const tx = await program.methods
-  //     .usdcDevTransfer()
-  //     .accounts({
-  //       auth: auth,
-  //       fromTokenAccount: auth,
-  //       toTokenAccount: tokenAddress,
-  //       mint: mint,
-  //     })
-  //     .rpc()
+    const tx = await program.methods
+      .usdcDevTransfer()
+      .accounts({
+        auth: auth,
+        fromTokenAccount: auth,
+        toTokenAccount: tokenAddress,
+        mint: mint,
+      })
+      .rpc()
 
-  //   const tokenAccount = await spl.getAccount(connection, auth)
-  // })
+    const tokenAccount = await spl.getAccount(connection, auth)
+  })
 
   // // Unused
   // it("PDA mint SPL Token, `SFT`", async () => {

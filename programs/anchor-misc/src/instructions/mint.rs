@@ -1,3 +1,7 @@
+// mint token from a PDA mint authority, unused instruction
+// used for testing "nft" minting
+// mint was not created in Anchor
+// mint was created using solana/spl-token and transferred mint auth
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
@@ -30,7 +34,6 @@ pub struct MintToken<'info> {
     pub payer: Signer<'info>,
 }
 
-// mint token from PDA mint authority
 pub fn mint_handler(ctx: Context<MintToken>) -> Result<()> {
     let seeds = &["auth".as_bytes(), &[*ctx.bumps.get("auth").unwrap()]];
     let signer = [&seeds[..]];

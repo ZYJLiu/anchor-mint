@@ -31,7 +31,7 @@ pub mod anchor_misc {
         instructions::create_nft_in_collection_handler(ctx, uri, name, symbol)
     }
 
-    // mint SFT as test in demo temporarily, replaced with NFT
+    // mint SFT, used temporarily to test, replaced with NFT
     pub fn mint(ctx: Context<MintToken>) -> Result<()> {
         instructions::mint_handler(ctx)
     }

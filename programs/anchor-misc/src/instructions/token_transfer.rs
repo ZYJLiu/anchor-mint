@@ -1,3 +1,4 @@
+// transfer SPL tokens, unnecessary to use Anchor instruction, but used to test building Solana Pay transactions with Anchor instruction
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,

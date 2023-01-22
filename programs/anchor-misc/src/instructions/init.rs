@@ -1,3 +1,4 @@
+// create PDA token account
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 #[derive(Accounts)]
@@ -25,7 +26,6 @@ pub struct Init<'info> {
     pub payer: Signer<'info>,
 }
 
-// init PDA token account
 pub fn init_handler(_ctx: Context<Init>) -> Result<()> {
     Ok(())
 }

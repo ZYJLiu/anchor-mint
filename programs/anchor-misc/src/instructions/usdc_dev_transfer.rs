@@ -1,3 +1,5 @@
+// transfer SPL token from PDA token account to user token account
+// used to setup mobile wallet in Sandstorm hackathon with USDC-dev token
 use anchor_lang::prelude::*;
 use anchor_spl::{
     associated_token::AssociatedToken,
