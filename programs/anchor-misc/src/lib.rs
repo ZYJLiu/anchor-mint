@@ -31,12 +31,12 @@ pub mod anchor_misc {
         instructions::create_nft_in_collection_handler(ctx, uri, name, symbol)
     }
 
-    // mint SFT as test in demo, replaced with NFT
+    // mint SFT as test in demo temporarily, replaced with NFT
     pub fn mint(ctx: Context<MintToken>) -> Result<()> {
         instructions::mint_handler(ctx)
     }
 
-    // SPL token transfer, used to transfer USDC-dev token
+    // SPL token transfer, used to transfer USDC-dev token between customer and merchant
     pub fn token_transfer(ctx: Context<TokenTransfer>, amount: u64) -> Result<()> {
         instructions::token_transfer_handler(ctx, amount)
     }

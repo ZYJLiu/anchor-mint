@@ -1,7 +1,7 @@
 use anchor_lang::{prelude::*, solana_program::program::invoke_signed};
 use anchor_spl::{
     associated_token::AssociatedToken,
-    token::{self, mint_to, Mint, MintTo, Token, TokenAccount},
+    token::{mint_to, Mint, MintTo, Token, TokenAccount},
 };
 use mpl_token_metadata::{
     instruction::{
@@ -82,6 +82,7 @@ impl anchor_lang::Id for TokenMetaData {
     }
 }
 
+// create new nft in collection
 pub fn create_nft_in_collection_handler(
     ctx: Context<CreateNftInCollection>,
     uri: String,

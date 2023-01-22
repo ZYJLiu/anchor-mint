@@ -25,6 +25,7 @@ pub struct Init<'info> {
     pub payer: Signer<'info>,
 }
 
-pub fn init_handler(ctx: Context<Init>) -> Result<()> {
+// init PDA token account
+pub fn init_handler(_ctx: Context<Init>) -> Result<()> {
     Ok(())
 }

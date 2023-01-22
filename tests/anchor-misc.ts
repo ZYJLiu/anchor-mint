@@ -138,6 +138,7 @@ describe("anchor-misc", () => {
       wallet.publicKey
     )
 
+    // Instruction requires more compute units
     const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
       units: 250_000,
     })

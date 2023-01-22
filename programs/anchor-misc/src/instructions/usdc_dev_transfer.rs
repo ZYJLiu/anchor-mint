@@ -34,6 +34,7 @@ pub struct UsdcDevTransfer<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
+// transfer SPL token from PDA token account to user token account
 pub fn usdc_dev_transfer_handler(ctx: Context<UsdcDevTransfer>) -> Result<()> {
     let seeds = &["auth".as_bytes(), &[*ctx.bumps.get("auth").unwrap()]];
     let signer = [&seeds[..]];

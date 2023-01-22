@@ -30,6 +30,7 @@ pub struct MintToken<'info> {
     pub payer: Signer<'info>,
 }
 
+// mint token from PDA mint authority
 pub fn mint_handler(ctx: Context<MintToken>) -> Result<()> {
     let seeds = &["auth".as_bytes(), &[*ctx.bumps.get("auth").unwrap()]];
     let signer = [&seeds[..]];

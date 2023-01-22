@@ -65,6 +65,7 @@ impl anchor_lang::Id for TokenMetaData {
     }
 }
 
+// create new nft
 pub fn create_nft_handler(
     ctx: Context<CreateNft>,
     uri: String,

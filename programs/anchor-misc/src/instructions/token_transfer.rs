@@ -29,7 +29,7 @@ pub struct TokenTransfer<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-// token transfer
+// transfer SPL tokens
 pub fn token_transfer_handler(ctx: Context<TokenTransfer>, amount: u64) -> Result<()> {
     let cpi_ctx = CpiContext::new(
         ctx.accounts.token_program.to_account_info(),
