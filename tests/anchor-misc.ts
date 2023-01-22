@@ -15,13 +15,23 @@ import { Metaplex } from "@metaplex-foundation/js"
 import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token"
 import NodeWallet from "@project-serum/anchor/dist/cjs/nodewallet"
 
+const nft = {
+  uri: "https://arweave.net/SMtY1dDmkVHuKQgWhioTnGdDziZSdAgAUZbDL8gWX3U",
+  name: "SANDSTORM",
+  symbol: "LAMPORTDAO",
+}
+
 describe("anchor-misc", () => {
   anchor.setProvider(anchor.AnchorProvider.env())
   const connection = anchor.getProvider().connection
   const wallet = anchor.workspace.AnchorMisc.provider.wallet
 
   const program = anchor.workspace.AnchorMisc as Program<AnchorMisc>
+  const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
+    "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+  )
 
+  // Used same PDA for everything for simplicity and testing
   const [auth] = findProgramAddressSync(
     [Buffer.from("auth")],
     program.programId
@@ -32,19 +42,10 @@ describe("anchor-misc", () => {
   const collectionNftMint = Keypair.generate()
   const nftMint = Keypair.generate()
 
-  const TOKEN_METADATA_PROGRAM_ID = new anchor.web3.PublicKey(
-    "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
-  )
-  const nft = {
-    uri: "https://arweave.net/bj7vXx6-AmFV0lk0QlCOGk1O9aCDoJAqefg55107rT4",
-    name: "NAME",
-    symbol: "SYMBOL",
-  }
-
-  // const receiver = anchor.web3.Keypair.generate()
-  // let senderTokenAccount: anchor.web3.PublicKey
-  // let receiverTokenAccount: anchor.web3.PublicKey
-  // let mint: anchor.web3.PublicKey
+  const receiver = anchor.web3.Keypair.generate()
+  let senderTokenAccount: anchor.web3.PublicKey
+  let receiverTokenAccount: anchor.web3.PublicKey
+  let mint: anchor.web3.PublicKey
 
   // before(async () => {
   //   mint = await spl.createMint(
@@ -76,6 +77,7 @@ describe("anchor-misc", () => {
   //     100_000
   //   )
   // })
+
   it("Create Collection NFT", async () => {
     const metadataPDA = await metaplex
       .nfts()
@@ -91,7 +93,6 @@ describe("anchor-misc", () => {
       wallet.publicKey
     )
 
-    // Add your test here.
     const transactionSignature = await program.methods
       .createNft(nft.uri, nft.name, nft.symbol)
       .accounts({
@@ -111,7 +112,7 @@ describe("anchor-misc", () => {
     )
 
     const account = await getAccount(connection, tokenAccount)
-    console.log(account.amount)
+    expect(Number(account.amount)).to.equal(1)
   })
 
   it("Create NFT in Collection", async () => {
@@ -141,7 +142,6 @@ describe("anchor-misc", () => {
       units: 250_000,
     })
 
-    // Add your test here.
     const tx = await program.methods
       .createNftInCollection(nft.uri, nft.name, nft.symbol)
       .accounts({
@@ -159,8 +159,7 @@ describe("anchor-misc", () => {
       })
       .signers([nftMint])
       .transaction()
-    // const keys = await tx.pubkeys()
-    // console.log(keys)
+
     const transferTransaction = new Transaction().add(modifyComputeUnits, tx)
 
     const transactionSignature = await sendAndConfirmTransaction(
@@ -173,10 +172,10 @@ describe("anchor-misc", () => {
     )
 
     const account = await getAccount(connection, tokenAccount)
-    console.log(account.amount)
+    expect(Number(account.amount)).to.equal(1)
   })
 
-  // it("Is initialized!", async () => {
+  // it("SPL token transfer", async () => {
   //   // Add your test here.
   //   const tx = await program.methods
   //     .tokenTransfer(new anchor.BN(10))
@@ -192,26 +191,8 @@ describe("anchor-misc", () => {
   //   expect(Number(tokenAccount.amount)).to.equal(10)
   // })
 
-  // it("Is initialized!", async () => {
-  //   const mint = new PublicKey("")
-  //   const receipient = new PublicKey("")
-  //   const tokenAddress = await spl.getAssociatedTokenAddress(mint, receipient)
-
-  //   const tx = await program.methods
-  //     .mint()
-  //     .accounts({
-  //       mint: mint,
-  //       tokenAccount: tokenAddress,
-  //       auth: auth,
-  //       receipient: receipient,
-  //     })
-  //     .rpc()
-
-  //   const tokenAccount = await spl.getAccount(connection, tokenAddress)
-  //   expect(Number(tokenAccount.amount)).to.equal(1)
-  // })
-
-  // it("Is initialized!", async () => {
+  // // Only run once to create PDA token account
+  // it("Create PDA USDC-dev token account", async () => {
   //   const mint = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr")
 
   //   const [auth] = findProgramAddressSync(
@@ -234,7 +215,7 @@ describe("anchor-misc", () => {
   //   expect(Number(tokenAccount.amount)).to.equal(0)
   // })
 
-  // it("Is initialized!", async () => {
+  // it("Transfer USDC-dev from PDA token account", async () => {
   //   const mint = new PublicKey("Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr")
 
   //   const tokenAddress = await spl.getAssociatedTokenAddress(
@@ -258,6 +239,25 @@ describe("anchor-misc", () => {
   //     .rpc()
 
   //   const tokenAccount = await spl.getAccount(connection, auth)
-  //   console.log(tokenAccount.amount)
+  // })
+
+  // // Unused
+  // it("PDA mint SPL Token, `SFT`", async () => {
+  //   const mint = new PublicKey("")
+  //   const receipient = new PublicKey("")
+  //   const tokenAddress = await spl.getAssociatedTokenAddress(mint, receipient)
+
+  //   const tx = await program.methods
+  //     .mint()
+  //     .accounts({
+  //       mint: mint,
+  //       tokenAccount: tokenAddress,
+  //       auth: auth,
+  //       receipient: receipient,
+  //     })
+  //     .rpc()
+
+  //   const tokenAccount = await spl.getAccount(connection, tokenAddress)
+  //   expect(Number(tokenAccount.amount)).to.equal(1)
   // })
 })
