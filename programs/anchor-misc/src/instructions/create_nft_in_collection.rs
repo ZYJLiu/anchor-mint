@@ -92,6 +92,7 @@ pub fn create_nft_in_collection_handler(
     let seeds = &["auth".as_bytes(), &[*ctx.bumps.get("auth").unwrap()]];
     let signer = [&seeds[..]];
 
+    // mint token
     mint_to(
         CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
@@ -122,6 +123,7 @@ pub fn create_nft_in_collection_handler(
         share: 100,
     }];
 
+    // create metadata account
     invoke_signed(
         &create_metadata_accounts_v3(
             ctx.accounts.token_metadata_program.key(), // token metadata program
@@ -157,6 +159,7 @@ pub fn create_nft_in_collection_handler(
         ctx.accounts.rent.to_account_info(),
     ];
 
+    // create master edition account
     invoke_signed(
         &create_master_edition_v3(
             ctx.accounts.token_metadata_program.key(), // token metadata program
@@ -177,6 +180,7 @@ pub fn create_nft_in_collection_handler(
         ctx.accounts.auth.to_account_info(),
     ];
 
+    // sign to verify creator
     invoke_signed(
         &sign_metadata(
             ctx.accounts.token_metadata_program.key(), // token metadata program
@@ -197,6 +201,8 @@ pub fn create_nft_in_collection_handler(
         ctx.accounts.collection_master_edition.to_account_info(),
     ];
 
+    // set collection and set to verified
+    // note to self, could not get "Collection Details" to work on collection nft, otherwise would use set_and_verify_collection_item
     invoke_signed(
         &set_and_verify_collection(
             ctx.accounts.token_metadata_program.key(), // token metadata program

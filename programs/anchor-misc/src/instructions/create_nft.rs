@@ -75,6 +75,7 @@ pub fn create_nft_handler(
     let seeds = &["auth".as_bytes(), &[*ctx.bumps.get("auth").unwrap()]];
     let signer = [&seeds[..]];
 
+    // mint token
     mint_to(
         CpiContext::new_with_signer(
             ctx.accounts.token_program.to_account_info(),
